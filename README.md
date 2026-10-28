@@ -1,11 +1,3 @@
-# Probability & Statistics — R Sub-Codes
-
-A collection of 11 practical R scripts covering core probability and statistics topics.
-Each file maps to one experiment. Replace the sample data and parameters with your actual
-question values before running.
-
----
-
 ## Table of Contents
 
 | # | File | Topic |
@@ -22,11 +14,7 @@ question values before running.
 | 10 | `10_chi_square_tests.R` | Chi-square goodness-of-fit and independence |
 | 11 | `11_anova_designs.R` | One-way ANOVA, two-way ANOVA, RBD, Latin square |
 
----
 
-## Experiment 01 — Basic R Functions and Data Input
-
-**File:** `01_basic_functions_data.R`
 
 ```r
 # Experiment 1: basic R functions and data input
@@ -91,11 +79,7 @@ barplot(table(empinfo$gender, empinfo$status), beside = TRUE)
 boxplot(age ~ status, data = empinfo, col = c("red", "blue"))
 ```
 
----
 
-## Experiment 03 — Correlation and Simple Linear Regression
-
-**File:** `03_correlation_simple_regression.R`
 
 ```r
 # Experiment 3: correlation and simple linear regression
@@ -126,11 +110,7 @@ model1 <- lm(bmi ~ weight)
 summary(model1)
 ```
 
----
 
-## Experiment 04 — Multiple Linear Regression
-
-**File:** `04_multiple_regression.R`
 
 ```r
 # Experiment 4: multiple linear regression
@@ -141,17 +121,15 @@ X2 <- c(11,10,7,15,19,12,8,14)
 
 RegModel <- lm(Y ~ X1 + X2)
 summary(RegModel)
+library(scatterplot3D)
+graph = scatterplot3D(Y,X2,X1)
+graph
 
-data <- mtcars
-model_mtcars <- lm(mpg ~ wt + hp, data = data)
-summary(model_mtcars)
+graph&plane3D(RegModel)
+
 ```
 
----
 
-## Experiment 05 — Binomial Distribution
-
-**File:** `05_binomial_distribution.R`
 
 ```r
 # Experiment 5: Binomial distribution
@@ -176,11 +154,7 @@ plot(x, px, type = "h", xlab = "Values of X",
      ylab = "Probability", main = "Binomial distribution")
 ```
 
----
 
-## Experiment 06 — Poisson and Normal Distributions
-
-**File:** `06_poisson_and_normal_distributions.R`
 
 ```r
 # Experiment 6: Poisson distribution
@@ -209,11 +183,7 @@ pnorm(15, mean = 20, sd = 5)
 pnorm(25, mean = 20, sd = 5) - pnorm(15, mean = 20, sd = 5)
 ```
 
----
 
-## Experiment 07 — Large-Sample Z-Tests
-
-**File:** `07_large_sample_z_tests.R`
 
 ```r
 # Experiment 7: one-sample mean Z-test
@@ -251,11 +221,7 @@ p_prop
 if (p_prop < alpha) "Reject H0" else "Do not reject H0"
 ```
 
----
 
-## Experiment 08 — Two-Sample Mean and Proportion Z-Tests
-
-**File:** `08_two_sample_proportion_tests.R`
 
 ```r
 # Experiment 8: two-sample mean Z-test
@@ -294,11 +260,7 @@ p_value_prop
 if (p_value_prop < alpha) "Reject H0" else "Do not reject H0"
 ```
 
----
 
-## Experiment 09 — t-Test and F-Test
-
-**File:** `09_t_test_and_f_test.R`
 
 ```r
 # Experiment 9: independent two-sample t-test
@@ -330,11 +292,7 @@ result_f
 if (result_f$p.value < alpha) "Reject H0" else "Do not reject H0"
 ```
 
----
 
-## Experiment 10 — Chi-Square Tests
-
-**File:** `10_chi_square_tests.R`
 
 ```r
 # Experiment 10: Chi-square goodness-of-fit test
@@ -365,11 +323,7 @@ observed_table <- matrix(c(69,51,81,20,35,44), ncol = 2, byrow = TRUE)
 chisq.test(observed_table)
 ```
 
----
 
-## Experiment 11 — ANOVA Designs
-
-**File:** `11_anova_designs.R`
 
 ```r
 # Experiment 11: One-way ANOVA / CRD
@@ -396,3 +350,73 @@ boxplot(group, ylab = "Response", main = "Compare groups")
 # Experiment 11: Latin Square Design
 # aov(response ~ row_factor + column_factor + treatment_factor, data = data)
 ```
+# Experiment 11: Two-way ANOVA
+
+StateA = c(6, 5, 3, 8)
+StateB = c(8, 9, 6, 5)
+StateC = c(10, 7, 8, 7)
+
+Group = data.frame(cbind(StateA, StateB, StateC))
+Group
+
+Sales = c(t(as.matrix(Group)))
+Sales
+
+f = c("State A", "State B", "State C")
+g = c("Salesman1", "Salesman2", "Salesman3", "Salesman4")
+
+k = ncol(Group)
+n = nrow(Group)
+
+States = gl(k, 1, n*k, factor(f))
+Salesmen = gl(n, k, n*k, factor(g))
+
+data = data.frame(Sales, States, Salesmen)
+data
+
+anova = aov(Sales ~ States + Salesmen, data = data)
+summary(anova)
+
+# Experiment 11: Latin Square Design
+
+manure = c(
+  rep("manure1", 5),
+  rep("manure2", 5),
+  rep("manure3", 5),
+  rep("manure4", 5),
+  rep("manure5", 5)
+)
+
+cultivation = rep(
+  c("cultP", "cultQ", "cultR", "cultS", "cultT"),
+  each = 5
+)
+
+crop = c(
+  "P","T","R","Q","S",
+  "R","Q","P","S","T",
+  "Q","R","S","T","P",
+  "S","P","T","R","Q",
+  "T","S","Q","P","R"
+)
+
+freq = c(
+  42,45,41,56,47,
+  47,54,46,52,49,
+  55,52,57,49,45,
+  51,44,47,50,54,
+  44,50,48,43,46
+)
+
+data = data.frame(cultivation, manure, crop, freq)
+data
+
+matrix(data$crop, nrow = 5, ncol = 5)
+matrix(data$freq, nrow = 5, ncol = 5)
+
+data$manure = factor(data$manure)
+data$cultivation = factor(data$cultivation)
+data$crop = factor(data$crop)
+
+fit = lm(freq ~ manure + cultivation + crop, data = data)
+anova(fit)
